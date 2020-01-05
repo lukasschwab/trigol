@@ -1,3 +1,6 @@
+# TODO: some docstrings.
+# TODO: SVG animation output.
+
 def even(n):
     return not int(n) % 2
 
