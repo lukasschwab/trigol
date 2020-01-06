@@ -41,7 +41,7 @@ class Grid:
         assert False
 
     # Must be implemented.
-    def _get_uni_cell(self, index):
+    def _print(self):
         assert False
 
     def _total_items(self):
@@ -73,8 +73,13 @@ class QuadGrid(Grid):
             (row+1, col-1), (row+1, col), (row+1, col+1)
         ]]
 
-    def _get_uni_cell(self, index):
-        return { True: "■", False: "□" }
+    def _print(self, get_cell_state):
+        glyphs = { True: "◼", False: "◻" }
+        for row in range(self._num_rows):
+            line = ""
+            for col in range(self._num_cols):
+                line += glyphs[get_cell_state(self._get_index(row, col))]
+            print(line)
 
 # TriGrid is a default triangle-tesselated toroidal grid. Each cell has three
 # neighbors, corresponding to its three shared edges.
@@ -103,9 +108,17 @@ class TriGrid(Grid):
             (1, 0)
         ])
 
-    def _get_uni_cell(self, index):
-        row, _ = self._get_row_col(index)
-        return { True: "▼", False: "▽" } if even(row) else { True: "▲", False: "△" }
+    def _print(self, get_cell_state):
+        down = { True: "▼", False: "▽" }
+        up = { True: "▲", False: "△" }
+        for row in range(0, self._num_rows - 1, 2):
+            line = " " * row
+            for col in range(self._num_cols):
+                top_index = self._get_index(row, col)
+                bottom_index = self._get_index(row + 1, col)
+                line += down[get_cell_state(top_index)]
+                line += up[get_cell_state(bottom_index)]
+            print(line)
 
 # TriGrid12 is a variant triangle-tesselated toroidal grid. Each cell has twelve
 # neighbors, corresponding to the 12 triangles that share one of its vertices.
@@ -142,20 +155,5 @@ class GameBoard:
             next[i] = self.evaluator(self, i)
         self.cells = next
 
-    def __print_cell(self, index, up):
-        if up:
-            return "▲" if self.get_cell_state(index) else "△"
-        return "▼" if self.get_cell_state(index) else "▽"
-
-    # TODO: grids should provide iterable index/unicode option pairs.
     def print(self):
-        def print_cell(alive):
-            return self.grid._get_uni_cell(index)[alive]
-        for row in range(0, self.grid._num_rows - 1, 2):
-            line = " " * row
-            for col in range(self.grid._num_cols):
-                top_index = row * self.grid._num_cols + col
-                bottom_index = (row + 1) * self.grid._num_cols + col
-                line += self.__print_cell(top_index, False)
-                line += self.__print_cell(bottom_index, True)
-            print(line)
+        self.grid._print(self.get_cell_state)
