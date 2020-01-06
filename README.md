@@ -1,3 +1,5 @@
+<img width="1268" alt="Screen Shot 2020-01-05 at 6 44 17 PM" src="https://user-images.githubusercontent.com/4955943/71791916-a00c2200-302e-11ea-9ed8-0a3cb4997443.png">
+
 # trigol
 
 Playing around with triangle-tesselated toroidal Game of Life scenarios because I'm reading DeLanda's *Philosophy and Simulation.*
