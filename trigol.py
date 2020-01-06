@@ -57,9 +57,24 @@ class TriGrid(Grid):
     def _is_valid_index(self, index):
         return index >= 0 and index < self._total_items()
 
+
+    # Offsets must be defined for an odd row.
+    def _inner_get_neighbors(self, index, offsets):
+        row, col = self._get_row_col(index)
+        flipper = -1 if even(index / self._num_cols) else 1
+        def inner_get(d_row, d_col):
+            modified_row = row + (flipper * d_row)
+            modified_col = col + (flipper * d_col)
+            return self._get_index(modified_row, modified_col)
+        return [inner_get(pair[0], pair[1]) for pair in offsets]
+
+
     def get_neighbors(self, index):
-        t = self._total_items()
-        return ((index + self._num_cols) % t, (index - self._num_cols) % t, self._third(index) % t)
+        return self._inner_get_neighbors(index, [
+            (-1, 0),
+            (-1, 1),
+            (1, 0)
+        ])
 
     # Accepts out-of-bound row, col pairs.
     def _get_index(self, row, col):
@@ -76,17 +91,12 @@ class TriGrid12(TriGrid):
         super().__init__(num_rows, num_cols)
 
     def get_neighbors(self, index):
-        row, col = self._get_row_col(index)
-        flipper = -1 if even(index / self._num_cols) else 1
-        def inner_get(d_row, d_col):
-            modified_row = row + (flipper * d_row)
-            modified_col = col + (flipper * d_col)
-            return self._get_index(modified_row, modified_col)
-        # Magic offsets: get all triangles that share a vertex with index.
-        return [inner_get(pair[0], pair[1]) for pair in [
-            (1, 1),(2, 0),(1, 0),(2, -1),(1, -1),(0, -1),
-            (-1, 0),(-2, 0),(-3, 1),(-2, 1),(-1, 1),(0, 1)
-        ]]
+        return self._inner_get_neighbors(index, [
+            (1, 1),(2, 0),(1, 0),
+            (2, -1),(1, -1),(0, -1),
+            (-1, 0),(-2, 0),(-3, 1),
+            (-2, 1),(-1, 1),(0, 1)
+        ])
 
 class GameBoard(TriGrid):
     def __init__(self, num_rows, num_cols, evaluator=copy_evaluator):
