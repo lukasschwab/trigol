@@ -12,12 +12,12 @@ def invert_evaluator(board, i):
     return not copy_evaluator(board, i)
 
 def infection_evaluator(board, i):
-    neighbors = board.get_neighbors(i)
+    neighbors = board.grid.get_neighbors(i)
     n_states = sum([board.get_cell_state(n) for n in neighbors])
     return n_states > 0 or board.get_cell_state(i)
 
 def conwayish_evaluator(board, i):
-    neighbors = board.get_neighbors(i)
+    neighbors = board.grid.get_neighbors(i)
     n_states = sum([board.get_cell_state(n) for n in neighbors])
     # Unchanged if 1
     if n_states == 1:
@@ -31,7 +31,7 @@ class Grid:
     def __init__(self, num_rows, num_cols):
         assert False
 
-    def _is_valid_index(self, index):
+    def is_valid_index(self, index):
         assert False
 
     def get_neighbors(self, index):
@@ -54,7 +54,7 @@ class TriGrid(Grid):
         off = ((n % L) - 1) % L if even(index / L) else ((n % L) + 1) % L
         return base + off
 
-    def _is_valid_index(self, index):
+    def is_valid_index(self, index):
         return index >= 0 and index < self._total_items()
 
 
@@ -83,7 +83,7 @@ class TriGrid(Grid):
         return ((row * self._num_cols) + col) % self._total_items()
 
     def _get_row_col(self, index):
-        assert self._is_valid_index(index)
+        assert self.is_valid_index(index)
         return int(index / self._num_cols), index % self._num_cols
 
 class TriGrid12(TriGrid):
@@ -98,19 +98,19 @@ class TriGrid12(TriGrid):
             (-2, 1),(-1, 1),(0, 1)
         ])
 
-class GameBoard(TriGrid):
-    def __init__(self, num_rows, num_cols, evaluator=copy_evaluator):
-        super().__init__(num_rows, num_cols)
+class GameBoard:
+    def __init__(self, num_rows, num_cols, evaluator=infection_evaluator, grid_class=TriGrid):
+        self.grid = grid_class(num_rows, num_cols)
+        self.evaluator = evaluator
         # Initialize all cells to dead.
         self.cells = [False] * num_rows * num_cols
-        self.evaluator = evaluator
 
     def get_cell_state(self, index):
-        assert self._is_valid_index(index)
+        assert self.grid.is_valid_index(index)
         return self.cells[index]
 
     def set_cell_state(self, index, state):
-        assert self._is_valid_index(index)
+        assert self.grid.is_valid_index(index)
         self.cells[index] = state
 
     def step(self):
@@ -126,11 +126,11 @@ class GameBoard(TriGrid):
 
     # TODO: columnar printing.
     def print(self):
-        for row in range(0, self._num_rows - 1, 2):
+        for row in range(0, self.grid._num_rows - 1, 2):
             line = " " * row
-            for col in range(self._num_cols):
-                top_index = row * self._num_cols + col
-                bottom_index = (row + 1) * self._num_cols + col
+            for col in range(self.grid._num_cols):
+                top_index = row * self.grid._num_cols + col
+                bottom_index = (row + 1) * self.grid._num_cols + col
                 line += self.__print_cell(top_index, False)
                 line += self.__print_cell(bottom_index, True)
             print(line)
