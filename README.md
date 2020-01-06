@@ -2,9 +2,13 @@
 
 Playing around with triangle-tesselated toroidal Game of Life scenarios because I'm reading DeLanda's *Philosophy and Simulation.*
 
-To-do items are noted inline.
+Used [Cellular Automata in the Triangular Tessellation (Bays)](https://wpmedia.wolfram.com/uploads/sites/13/2018/02/08-2-4.pdf) as a reference for standard rulesets.
 
 ## Usage
+
+This is built more for REPL-fiddling than modular usage.
+
+### Standard Game of Life
 
 ```python
 import trigol, grid, evaluators, time
@@ -15,14 +19,12 @@ test = trigol.GameBoard(
 )
 
 # Glider.
-test.set_cell_state(5 + 10, True)
-test.set_cell_state(10 + 10, True)
-test.set_cell_state(11 + 10, True)
-test.set_cell_state(12 + 10, True)
-test.set_cell_state(1 + 10, True)
+test.set_multiple_cell_states(11, 15, 20, 21, 22)
 while True:
   test.step(); test.print(); time.sleep(0.5)
 ```
+
+### Triangle-tesselated Game of Life
 
 ```python
 import trigol, evaluators, grid
@@ -33,14 +35,7 @@ test = trigol.GameBoard(
 )
 
 # Glider... with triangles!
-test.set_cell_state(45, True)
-test.set_cell_state(46, True)
-test.set_cell_state(65, True)
-test.set_cell_state(66, True)
-test.set_cell_state(85, True)
-test.set_cell_state(105, True)
-test.set_cell_state(104, True)
-test.set_cell_state(86, True)
+test.set_multiple_cell_states(45, 46, 65, 66, 65, 86, 104, 105)
 while True:
   test.step(); test.print(); time.sleep(0.5)
 ```
