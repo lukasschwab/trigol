@@ -28,8 +28,6 @@ def get_evaluator(El, Eh, Fl, Fh):
         return board.get_cell_state(i)
     return evaluator
 
-test_get_evaluator = get_evaluator(2, 3, 3, 3)
-
 # TRIANGLE GRIDS
 
 # trigrid_conway_evaluator is a shoddy adapted version of the standard
@@ -42,6 +40,8 @@ def trigrid_conway_evaluator(board, i):
         return board.get_cell_state(i)
     # Spawn if 2; else die
     return n_states == 2
+
+tri4644 = get_evaluator(4, 6, 4, 4)
 
 # QUAD GRIDS
 
