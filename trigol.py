@@ -15,11 +15,11 @@ class GameBoard:
         assert self.grid._is_valid_index(index)
         return self.cells[index]
 
-    def set_cell_state(self, index, state):
+    def set_cell_state(self, index, state=True):
         assert self.grid._is_valid_index(index)
         self.cells[index] = state
 
-    def set_multiple_cell_states(self, indices, state):
+    def set_multiple_cell_states(self, indices, state=True):
         for index in indices:
             self.set_cell_state(index, state)
 

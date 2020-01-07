@@ -21,7 +21,7 @@ test = trigol.GameBoard(
 )
 
 # Glider.
-test.set_multiple_cell_states(11, 15, 20, 21, 22)
+test.set_multiple_cell_states([11, 15, 20, 21, 22])
 while True:
   test.step(); test.print(); time.sleep(0.5)
 ```
@@ -37,7 +37,7 @@ test = trigol.GameBoard(
 )
 
 # Glider... with triangles!
-test.set_multiple_cell_states(45, 46, 65, 66, 65, 86, 104, 105)
+test.set_multiple_cell_states([45, 46, 65, 66, 65, 86, 104, 105])
 while True:
   test.step(); test.print(); time.sleep(0.5)
 ```
