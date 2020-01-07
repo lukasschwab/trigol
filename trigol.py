@@ -1,13 +1,13 @@
-from grid import TriGrid
+from grid import QuadGrid
 from evaluators import infection_evaluator
 
-# TODO: some docstrings.
 # TODO: SVG animation output.
 
+# GameBoard represents a Game of Life state.
 class GameBoard:
-    def __init__(self, num_rows, num_cols, evaluator=infection_evaluator, grid_class=TriGrid):
+    def __init__(self, num_rows, num_cols, evaluator=infection_evaluator, grid_class=QuadGrid):
         self.grid = grid_class(num_rows, num_cols)
-        self.evaluator = evaluator
+        self.__evaluator = evaluator
         # Initialize all cells to dead.
         self.cells = [False] * num_rows * num_cols
 
@@ -26,8 +26,9 @@ class GameBoard:
     def step(self):
         next = [False] * len(self.cells)
         for i in range(len(self.cells)):
-            next[i] = self.evaluator(self, i)
+            next[i] = self.__evaluator(self, i)
         self.cells = next
 
+    # print defers to the underlying grid's print method.
     def print(self):
         self.grid._print(self.get_cell_state)

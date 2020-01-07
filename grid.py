@@ -2,38 +2,46 @@
 def even(n):
     return not int(n) % 2
 
-# Grids are indexing utilities for GameBoards.
+# Grids are indexing and adjacency utilities for GameBoards.
 class Grid:
     def __init__(self, num_rows, num_cols):
         self._num_rows = num_rows
         self._num_cols = num_cols
-        # Default to none.
-        self._print_line_lead = ""
 
-    # Must be implemented.
+    # _get_neighbors returns an iterable containing the indices of the neighbors
+    # of the cell at INDEX.
+    # Must be implemented by inheriting classes.
     def _get_neighbors(self, index):
-        assert False
+        raise Exception("NotImplementedException")
 
-    # Must be implemented.
-    def _print(self):
-        assert False
+    # _print pretty-prints the grid to stdout.
+    # Must be implemented by inheriting classes.
+    def _print(self, get_cell_state):
+        raise Exception("NotImplementedException")
 
+    # _total_items returns the number of cells in this grid.
     def _total_items(self):
         return self._num_rows * self._num_cols
 
+    # _is_valid_index returns true iff INDEX is a valid index in this grid.
     def _is_valid_index(self, index):
         return index >= 0 and index < self._total_items()
 
-    # Accepts out-of-bound row, col pairs.
+    # _get_index accepts out-of-bound row, col pairs and converte them to valid
+    # indices by calculating their values mod the row count and column count,
+    # respectively.
     def _get_index(self, row, col):
         row = row % self._num_rows
         col = col % self._num_cols
         return ((row * self._num_cols) + col) % self._total_items()
 
+    # _get_row_col converts INDEX to its (row, column) position in the grid.
     def _get_row_col(self, index):
         assert self._is_valid_index(index)
         return int(index / self._num_cols), index % self._num_cols
 
+# QuadGrid is a standard rectangular grid, as used in the standard Conway
+# version of Game of Life. Each cell is adjacent to eight neighbors.
 class QuadGrid(Grid):
     def __init__(self, num_rows, num_cols):
         assert num_rows > 0 and num_cols > 0
@@ -62,8 +70,6 @@ class TriGrid(Grid):
         assert num_rows > 0 and num_cols > 0
         assert even(num_rows)
         super().__init__(num_rows, num_cols)
-        # Offsets are prettier.
-        self._print_line_lead = " "
 
     # Offsets must be defined for an odd row.
     def _inner_get_neighbors(self, index, offsets):
@@ -96,6 +102,9 @@ class TriGrid(Grid):
 
 # TriGrid12 is a variant triangle-tesselated toroidal grid. Each cell has twelve
 # neighbors, corresponding to the 12 triangles that share one of its vertices.
+#
+# This seems to be the standard triangular grid in literature, because it has a
+# larger valid ruleset; see e.g. Bays 1994.
 class TriGrid12(TriGrid):
     def __init__(self, num_rows, num_cols):
         super().__init__(num_rows, num_cols)
