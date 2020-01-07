@@ -15,7 +15,7 @@ This is built more for REPL-fiddling than modular usage.
 ```python
 import trigol, grid, evaluators, time
 test = trigol.GameBoard(
-  30, 100,
+  30, 5,
   grid_class=grid.QuadGrid,
   evaluator=evaluators.conway_evaluator
 )
@@ -29,7 +29,7 @@ while True:
 ### Triangle-tesselated Game of Life
 
 ```python
-import trigol, evaluators, grid
+import trigol, grid, evaluators, time
 test = trigol.GameBoard(
   20, 20,
   evaluator=evaluators.tri4644,
@@ -45,3 +45,5 @@ while True:
 ## Notes
 
 `Grid` can expose `get_polygon_coordinates`; drawing to SVG can look up the coordinates, then write the polygon to SVG.
+
+I'd like to be able to calculate the set of possible predecessor states, sans nosie (given any valid predecessor state in an infinite grid, one can create infinitely many other predecessor grids by adding single live cells way out in the distance that will die upon iteration).
